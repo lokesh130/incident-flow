@@ -1,0 +1,16 @@
+/.idea/
+*.iml
+*/target/
+*.txt
+azkaban-access.log
+azkaban-webserver.log
+derby.log
+.DS_Store
+demand-planning-helm-chart
+
+# mvn wrapper related files
+.mvn
+mvnw
+mvnw.cmd
+intervention-planner-webservice/fk-planning-ip-service-pkg
+planning-demand-forecasting-helm-chart

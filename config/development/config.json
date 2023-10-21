@@ -1,0 +1,57 @@
+{
+  "env": "development",
+  "server-applicationConnectors": [
+    {
+      "type": "http",
+      "port": 40001
+    }
+  ],
+  "server-adminConnectors": [
+    {
+      "type": "http",
+      "port": 40002
+    }
+  ],
+  "server-idleThreadTimeout": "20000s",
+  "server-requestLog-appenders": [
+    {
+      "type": "file",
+      "currentLogFilename": "/var/log/requests.log",
+      "archive": false,
+      "timeZone": "Asia/Calcutta"
+    },
+    {
+      "type": "console"
+    }
+  ],
+  "logging-level": "INFO",
+  "logging-appenders": [
+    {
+      "type": "console",
+      "timeZone": "IST"
+    }
+  ],
+
+  "database-driverClassName": "com.mysql.cj.jdbc.Driver",
+  "database-username": "root",
+  "database-password": "",
+  "database-url": "jdbc:mysql://localhost/planning_ip_dev?autoReconnect=true&useSSL=false&nullNamePatternMatchesAll=true",
+  "database-dbProperties-hibernate.format_sql": true,
+  "database-dbProperties-hibernate.show_sql": false,
+  "database-dbProperties-charSet": "UTF-8",
+  "database-dbProperties-hibernate.dialect": "org.hibernate.dialect.MySQL5Dialect",
+  "database-dbProperties-hibernate.generate_statistics": false,
+  "database-dbProperties-hibernate.current_session_context_class": "managed",
+  "database-minIdle": 8,
+  "database-maxActive": 10,
+  "database-maxWait": 1000,
+  "database-validationQuery": "/* Health Check */ SELECT 1",
+  "database-logValidationErrors": true,
+
+  "httpconfiguration-connectTimeout": 250000,
+  "httpconfiguration-readTimeout": 250000,
+
+  "jerseyClient-gzipEnabled": false,
+
+  "ipServiceConfiguration-url": "http://localhost:40001"
+}

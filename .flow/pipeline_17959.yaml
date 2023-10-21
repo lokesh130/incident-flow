@@ -1,0 +1,67 @@
+apiVersion: flow-v1
+kind: Pipeline
+spec:
+  pipeline_type: build
+  id: 17959
+  event_type: pull
+  trigger:
+    enable: true
+    source_branch: ""
+    commit_message: ""
+    pr_title: ""
+    modified_files: ""
+    pr_comment: ""
+    pr_label: ""
+  arguments:
+    parameters:
+    - name: jira
+      value: CTRPLN-4538
+      type: parameter
+    - name: pr
+      value: p
+      type: parameter
+    - name: Branch
+      value: feature/k8s-onboarding
+      type: parameter
+    - name: SERVICE_NAME
+      value: intervention-planner-webservice
+      type: parameter
+    - name: HELM_VERSION
+      value: ${FLOW_BUILD_NUMBER}
+      type: parameter
+    - name: APPLICATION_VERSION
+      value: 0.0.1
+      type: parameter
+    - name: APP_NAME
+      value: Intervention-planner
+      type: parameter
+    - name: DEV_DEPLOY_VALUE_FILE_PATH
+      value: clusters/hyd-playground/values.yaml
+      type: choice_parameter
+    - name: Skip_Dev_Deploy
+      value: "YES"
+      type: choice_parameter
+    - name: SONAR_PROJECT_KEY
+      value: intervention-planner
+      type: parameter
+    - name: Skip_Mavenbuild_Docker
+      value: "NO"
+      type: choice_parameter
+    - name: skip_sonar
+      value: "yes"
+      type: choice_parameter
+    - name: skip_jacoco
+      value: "yes"
+      type: choice_parameter
+    - name: skip_allure
+      value: "yes"
+      type: choice_parameter
+    artifacts: []
+deployparams:
+  env_type: ""
+  env_name: ""
+  env_id: 0
+  cluster_context_id: 0
+  registry_id: 1115
+  cluster_provider: ""
+  deploystrategy: null
