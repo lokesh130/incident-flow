@@ -35,7 +35,7 @@
   "database-driverClassName": "com.mysql.cj.jdbc.Driver",
   "database-username": "root",
   "database-password": "",
-  "database-url": "jdbc:mysql://localhost/planning_ip_dev?autoReconnect=true&useSSL=false&nullNamePatternMatchesAll=true",
+  "database-url": "jdbc:mysql://localhost/incident_flow?autoReconnect=true&useSSL=false&nullNamePatternMatchesAll=true",
   "database-dbProperties-hibernate.format_sql": true,
   "database-dbProperties-hibernate.show_sql": false,
   "database-dbProperties-charSet": "UTF-8",
