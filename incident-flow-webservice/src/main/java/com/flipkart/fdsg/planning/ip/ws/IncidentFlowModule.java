@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.flipkart.fdsg.planning.ip.core.clients.IPConfigClient;
+import com.flipkart.fdsg.planning.ip.core.entities.WatchEmail;
 import com.flipkart.fdsg.planning.ip.core.services.*;
 import com.flipkart.fdsg.planning.ip.ws.config.IncidentFlowConfiguration;
 import com.google.inject.Binder;
@@ -56,6 +57,8 @@ public class IncidentFlowModule extends DropwizardAwareModule<IncidentFlowConfig
         binder.bind(OncallUserService.class).to(DefaultOncallUserService.class);
         binder.bind(AlertService.class).to(DefaultAlertService.class);
         binder.bind(FollowupService.class).to(DefaultFollowupService.class);
+        binder.bind(WatchEmailService.class).to(DefaultWatchEmailService.class);
+        binder.bind(MessageConfigurationService.class).to(DefaultMessageConfigurationService.class);
     }
 
     private void registerResources(Binder binder) {

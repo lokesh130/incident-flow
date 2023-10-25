@@ -18,6 +18,7 @@ public class OncallTrackerDTO {
     private String oncallStatus;
     private String status;
     private OncallTracker.Priority priority;
+    private String rcaDoc;
 
     public static OncallTrackerDTO map(OncallTracker oncallTracker) {
         return OncallTrackerDTO.builder()
@@ -28,6 +29,7 @@ public class OncallTrackerDTO {
                 .oncallStatus(oncallTracker.getOncallStatus())
                 .status(oncallTracker.getStatus())
                 .priority(oncallTracker.getPriority())
+                .rcaDoc(oncallTracker.getRcaDoc())
                 .build();
     }
 }

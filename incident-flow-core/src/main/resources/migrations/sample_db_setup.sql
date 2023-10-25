@@ -106,22 +106,34 @@ ALTER TABLE current_users
 ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
 CREATE TABLE alerts (
-                        id INT PRIMARY KEY AUTO_INCREMENT,
-                        title VARCHAR(255),
-                        message VARCHAR(255),
-                        is_acknowledged ENUM('YES', 'NO'),
-                        priority ENUM('P0', 'P1', 'P2', 'P3')
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255),
+    message VARCHAR(255),
+    is_acknowledged ENUM('YES', 'NO'),
+    priority ENUM('P0', 'P1', 'P2', 'P3')
 );
 
 CREATE TABLE `followups` (
-                             `id` int(11) NOT NULL AUTO_INCREMENT,
-                             `oncall_tracker_id` int(11) NOT NULL,
-                             `message` varchar(255) DEFAULT NULL,
-                             `is_acknowledged` enum('YES','NO') DEFAULT NULL,
-                             PRIMARY KEY (`id`),
-                             KEY `oncall_tracker_id` (`oncall_tracker_id`),
-                             CONSTRAINT `followups_ibfk_1` FOREIGN KEY (`oncall_tracker_id`) REFERENCES `oncall_tracker` (`id`)
+     `id` int(11) NOT NULL AUTO_INCREMENT,
+     `oncall_tracker_id` int(11) NOT NULL,
+     `message` varchar(255) DEFAULT NULL,
+     `is_acknowledged` enum('YES','NO') DEFAULT NULL,
+     PRIMARY KEY (`id`),
+     KEY `oncall_tracker_id` (`oncall_tracker_id`),
+     CONSTRAINT `followups_ibfk_1` FOREIGN KEY (`oncall_tracker_id`) REFERENCES `oncall_tracker` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE watch_emails (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE message_configuration (
+   id INT AUTO_INCREMENT PRIMARY KEY,
+   subject_regex VARCHAR(255),
+   frequency INT
+);
 
 ALTER TABLE followups
     ADD COLUMN priority ENUM('P0', 'P1', 'P2', 'P3');
@@ -133,6 +145,9 @@ DROP COLUMN is_acknowledged;
 -- For the 'followup' table
 ALTER TABLE followups
 DROP COLUMN is_acknowledged;
+
+ALTER TABLE oncall_tracker
+    ADD COLUMN rca_doc varchar(255);
 
 -- Adding records to oncall_user table
 INSERT INTO oncall_user (user_id, name) VALUES

@@ -47,6 +47,9 @@ public class OncallTracker extends BaseEntity {
     @Column(name = "priority")
     private Priority priority;
 
+    @Column(name = "rca_doc")
+    private String rcaDoc;
+
     public enum Priority {
         P0, P1, P2, P3;
     }

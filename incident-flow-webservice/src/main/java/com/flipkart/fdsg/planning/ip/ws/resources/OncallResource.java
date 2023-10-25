@@ -30,6 +30,7 @@ public class OncallResource {
     private final HistoricalUserService historicalUserService;
     private final FollowupService followupService;
     private final AlertService alertService;
+    private final WatchEmailService watchEmailService;
 
     @GET
     @Path("/active-oncall-group")
@@ -175,4 +176,54 @@ public class OncallResource {
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
     }
+
+    @GET
+    @Path("/watch-emails")
+    @Produces(MediaType.APPLICATION_JSON)
+    @UnitOfWork
+    public Response getAllWatchEmails() {
+        log.info("Getting all watch emails");
+
+        try {
+            List<WatchEmailDTO> allWatchEmails = watchEmailService.getAllEmails()
+                    .stream().map(WatchEmailDTO::map).collect(Collectors.toList());
+
+            return Response.ok(allWatchEmails).build();
+        } catch (RecordNotFoundException e) {
+            log.error("Error while getting watch emails: {}", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Path("/watch-emails")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @UnitOfWork
+    public Response addWatchEmail(WatchEmailDTO watchEmailDTO) {
+        log.info("Adding watch email");
+
+        try {
+            watchEmailService.addEmail(watchEmailDTO.getEmail());
+            return Response.status(Response.Status.CREATED).build();
+        } catch (Exception e) {
+            log.error("Error while adding watch email: {}", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+    @DELETE
+    @Path("/watch-emails/{email}")
+    @UnitOfWork
+    public Response deleteWatchEmail(@PathParam("email") String email) {
+        log.info("Deleting watch email");
+
+        try {
+            watchEmailService.deleteEmail(email);
+            return Response.ok().build();
+        } catch (Exception e) {
+            log.error("Error while deleting watch email: {}", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
 }

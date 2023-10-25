@@ -206,6 +206,6 @@ public class GmailClient {
     public static void main(String[] args) {
         GmailClient gmailClient = new GmailClient();
 
-        gmailClient.readAllMessagesTo("mlokesh.mamta@gmail.com", 100);
+        gmailClient.readAllMessagesTo("mlokesh.mamta@gmail.com", 5);
     }
 }
