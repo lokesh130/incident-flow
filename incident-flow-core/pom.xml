@@ -9,7 +9,7 @@
         <artifactId>incident-flow</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>intervention-planner-core</artifactId>
+    <artifactId>incident-flow-core</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <!--  Using libraries-bom to manage versions.
     See https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM -->

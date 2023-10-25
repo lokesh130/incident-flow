@@ -13,17 +13,17 @@
         <main.class>com.flipkart.fdsg.planning.ip.ws.IncidentFlowApplication</main.class>
         <development.configPath>./config/development/config.json</development.configPath>
     </properties>
-    <artifactId>intervention-planner-webservice</artifactId>
+    <artifactId>incident-flow-webservice</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <dependencies>
         <dependency>
             <groupId>com.flipkart.fdsg.planning</groupId>
-            <artifactId>intervention-planner-core</artifactId>
+            <artifactId>incident-flow-core</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.flipkart.fdsg.planning</groupId>
-            <artifactId>intervention-planner-core</artifactId>
+            <artifactId>incident-flow-core</artifactId>
             <version>1.0.0-SNAPSHOT</version>
             <type>test-jar</type>
             <scope>test</scope>

@@ -54,6 +54,8 @@ public class IncidentFlowModule extends DropwizardAwareModule<IncidentFlowConfig
         binder.bind(OncallSuggestionService.class).to(DefaultOncallSuggestionService.class);
         binder.bind(OncallTrackerService.class).to(DefaultOncallTrackerService.class);
         binder.bind(OncallUserService.class).to(DefaultOncallUserService.class);
+        binder.bind(AlertService.class).to(DefaultAlertService.class);
+        binder.bind(FollowupService.class).to(DefaultFollowupService.class);
     }
 
     private void registerResources(Binder binder) {

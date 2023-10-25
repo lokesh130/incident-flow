@@ -5,6 +5,7 @@ import com.flipkart.fdsg.planning.ip.core.entities.ActiveOncallGroup;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,5 +28,11 @@ public class DefaultActiveOncallGroupService implements ActiveOncallGroupService
     @Transactional
     public Optional<ActiveOncallGroup> findLatestActiveGroup() {
         return activeOncallGroupDAO.findLatestActiveGroup();
+    }
+
+    @Override
+    @Transactional
+    public Optional<ActiveOncallGroup> findActiveGroupByDate(LocalDateTime givenDate) {
+        return activeOncallGroupDAO.findActiveGroupBySingleDate(givenDate);
     }
 }

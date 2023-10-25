@@ -105,6 +105,35 @@ ALTER TABLE current_users
     ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
+CREATE TABLE alerts (
+                        id INT PRIMARY KEY AUTO_INCREMENT,
+                        title VARCHAR(255),
+                        message VARCHAR(255),
+                        is_acknowledged ENUM('YES', 'NO'),
+                        priority ENUM('P0', 'P1', 'P2', 'P3')
+);
+
+CREATE TABLE `followups` (
+                             `id` int(11) NOT NULL AUTO_INCREMENT,
+                             `oncall_tracker_id` int(11) NOT NULL,
+                             `message` varchar(255) DEFAULT NULL,
+                             `is_acknowledged` enum('YES','NO') DEFAULT NULL,
+                             PRIMARY KEY (`id`),
+                             KEY `oncall_tracker_id` (`oncall_tracker_id`),
+                             CONSTRAINT `followups_ibfk_1` FOREIGN KEY (`oncall_tracker_id`) REFERENCES `oncall_tracker` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+ALTER TABLE followups
+    ADD COLUMN priority ENUM('P0', 'P1', 'P2', 'P3');
+
+-- For the 'alerts' table
+ALTER TABLE alerts
+DROP COLUMN is_acknowledged;
+
+-- For the 'followup' table
+ALTER TABLE followups
+DROP COLUMN is_acknowledged;
+
 -- Adding records to oncall_user table
 INSERT INTO oncall_user (user_id, name) VALUES
     ("lokesh.kumar2", "Lokesh Kumar"),
@@ -180,9 +209,24 @@ INSERT INTO current_users (oncall_tracker_id, user_id) VALUES
        (5, "manikandan"),
        (6, "roshan.kapoor");
 
+-- Inserting data into active_oncall_group table
+INSERT INTO active_oncall_group (primary_user_id, secondary_user_id, start_date, end_date)
+VALUES
+    (3, 4, '2023-10-11', '2023-10-21'),
+    (5, 6, '2023-10-1', '2023-10-10');
 
+INSERT INTO alerts (title, message, is_acknowledged, priority)
+VALUES
+    ('Mobile Forecast Model did not run from last 1 month', 'Please investigate urgently', 'NO', 'P0'),
+    ('HF Forecast Model did not run from last 2 weeks', 'Please investigate urgently', 'NO', 'P1'),
+    ('No sell plan uploaded for Lifestyle from last 2 months', 'Please investigate the issue, and talk to stakeholders', 'NO', 'P2'),
+    ('LTA Model failed 5 times with the same error', 'LTA Model failed 5 times, with same error, event_calendar issue. Please investigate', 'NO', 'P3'),
+    ('No update in demand plan, since last month', 'Please talk to the stakeholders', 'NO', 'P2');
 
-
+INSERT INTO followups (oncall_tracker_id, message, is_acknowledged)
+VALUES
+    (1, 'No Response since past 7 Days', 'NO', 'P1'),
+    (2, 'No Response since past 15 Days', 'NO', 'P0');
 
 
 

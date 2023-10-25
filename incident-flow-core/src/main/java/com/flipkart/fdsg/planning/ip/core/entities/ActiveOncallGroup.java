@@ -19,7 +19,13 @@ import java.time.LocalDateTime;
         @NamedQuery(name = "ActiveOncallGroup.findAll", query = "SELECT aog FROM ActiveOncallGroup aog"),
         @NamedQuery(name = "ActiveOncallGroup.findLatestActiveGroup",
                 query = "SELECT aog FROM ActiveOncallGroup aog " +
-                        "WHERE aog.startDate = (SELECT MAX(aogInner.startDate) FROM ActiveOncallGroup aogInner)")
+                        "WHERE aog.startDate = (SELECT MAX(aogInner.startDate) FROM ActiveOncallGroup aogInner)"),
+        @NamedQuery(
+                name = "ActiveOncallGroup.findBySingleDate",
+                query = "SELECT aog FROM ActiveOncallGroup aog " +
+                        "WHERE :givenDate BETWEEN aog.startDate AND aog.endDate " +
+                        "ORDER BY aog.startDate DESC"
+        )
 
 })
 public class ActiveOncallGroup extends BaseEntity {

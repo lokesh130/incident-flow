@@ -10,12 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +28,8 @@ public class OncallResource {
     private final OncallSuggestionService oncallSuggestionService;
     private final CurrentUserService currentUserService;
     private final HistoricalUserService historicalUserService;
+    private final FollowupService followupService;
+    private final AlertService alertService;
 
     @GET
     @Path("/active-oncall-group")
@@ -40,6 +40,25 @@ public class OncallResource {
 
         try {
             ActiveOncallGroup latestActiveGroup = activeOncallGroupService.findLatestActiveGroup()
+                    .orElseThrow(() -> new RecordNotFoundException(ActiveOncallGroup.class, "No active on-call group found"));
+
+            return Response.ok(ActiveOncallGroupDTO.map(latestActiveGroup)).build();
+        } catch (RecordNotFoundException e) {
+            log.error("Error while getting the latest active on-call group: {}", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/active-oncall-group/{date}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @UnitOfWork
+    public Response getActiveOncallGroupByDate(@PathParam("date") String date) {
+        log.info("Getting the latest active on-call group");
+        log.info("Date: {}", date);
+        LocalDateTime givenDate = LocalDateTime.parse(date);
+        try {
+            ActiveOncallGroup latestActiveGroup = activeOncallGroupService.findActiveGroupByDate(givenDate)
                     .orElseThrow(() -> new RecordNotFoundException(ActiveOncallGroup.class, "No active on-call group found"));
 
             return Response.ok(ActiveOncallGroupDTO.map(latestActiveGroup)).build();
@@ -117,6 +136,42 @@ public class OncallResource {
             return Response.ok(currentUsers).build();
         } catch (RecordNotFoundException e) {
             log.error("Error while getting current users: {}", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/followups")
+    @Produces(MediaType.APPLICATION_JSON)
+    @UnitOfWork
+    public Response getAllFollowups() {
+        log.info("Getting all unacknowledged followups");
+
+        try {
+            List<FollowupDTO> allFollowups = followupService.findAll()
+                    .stream().map(FollowupDTO::map).collect(Collectors.toList());
+
+            return Response.ok(allFollowups).build();
+        } catch (RecordNotFoundException e) {
+            log.error("Error while getting unacknowledged followups: {}", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/alerts")
+    @Produces(MediaType.APPLICATION_JSON)
+    @UnitOfWork
+    public Response getAllAlerts() {
+        log.info("Getting all unacknowledged alerts");
+
+        try {
+            List<AlertDTO> allAlerts = alertService.findAll()
+                    .stream().map(AlertDTO::map).collect(Collectors.toList());
+
+            return Response.ok(allAlerts).build();
+        } catch (RecordNotFoundException e) {
+            log.error("Error while getting unacknowledged alerts: {}", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
     }
