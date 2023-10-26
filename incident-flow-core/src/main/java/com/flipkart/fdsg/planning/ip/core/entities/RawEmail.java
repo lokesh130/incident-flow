@@ -1,12 +1,11 @@
 package com.flipkart.fdsg.planning.ip.core.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Builder
 @Data
@@ -18,30 +17,12 @@ import java.time.LocalDateTime;
         @NamedQuery(name = "Emails.findAll", query = "SELECT emails FROM RawEmail emails"),
         @NamedQuery(name = "Emails.findBySubject", query = "SELECT emails FROM RawEmail emails "+
                 "WHERE emails.subject = :subject"),
-        @NamedQuery(name = "Emails.findByToList",
-                query = "SELECT emails FROM RawEmail emails " +
-                        "WHERE emails.toList = :toList " +
-                        "ORDER BY emails.startDate DESC"
-        ),
-        @NamedQuery(
-                name = "Emails.findByFromList",
-                query = "SELECT emails FROM RawEmail emails " +
-                        "WHERE emails.fromList = :fromList "+
-                        "ORDER BY emails.startDate DESC"
-        ),
-        @NamedQuery(
-                name = "Emails.findByThreadId",
-                query = "SELECT emails FROM RawEmail emails " +
-                        "WHERE emails.threadId = :threadId "+
-                        "ORDER BY emails.startDate DESC"
-        ),
-        @NamedQuery(
-                name = "Emails.findByMessageId",
-                query = "SELECT emails FROM RawEmail emails " +
-                        "WHERE emails.messageId = :messageId "+
-                        "ORDER BY emails.startDate DESC"
-        )
-
+        @NamedQuery(name = "Emails.findByThreadId", query = "SELECT emails FROM RawEmail emails "+
+                "WHERE emails.threadId = :threadId"),
+        @NamedQuery(name = "Emails.findByMessageId", query = "SELECT emails FROM RawEmail emails "+
+                "WHERE emails.messageId = :messageId"),
+        @NamedQuery(name = "Emails.findById", query = "SELECT emails FROM RawEmail emails "+
+                "WHERE emails.id = :id")
 })
 public class RawEmail extends BaseEntity {
     @Id
@@ -53,8 +34,8 @@ public class RawEmail extends BaseEntity {
     @Column(name="to_list")
     private String toList;
 
-    @Column(name = "from_list")
-    private String fromList;
+    @Column(name = "from")
+    private String from;
 
     @Column
     private String body;
@@ -68,9 +49,13 @@ public class RawEmail extends BaseEntity {
     @Column(name = "message_order")
     private String messageOrder;
 
-    @Column(name = "start_date")
-    private LocalDateTime startDate;
+    // Custom getter for toList
+    public List<String> getToList() {
+        return Arrays.asList(toList.split(","));
+    }
 
-    @Column(name = "end_date")
-    private LocalDateTime endDate;
+    // Custom setter for toList
+    public void setToList(List<String> toList) {
+        this.toList = String.join(",", toList);
+    }
 }

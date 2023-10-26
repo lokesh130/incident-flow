@@ -31,6 +31,7 @@ public class OncallResource {
     private final FollowupService followupService;
     private final AlertService alertService;
     private final WatchEmailService watchEmailService;
+    private final SyncService syncService;
 
     @GET
     @Path("/active-oncall-group")
@@ -223,6 +224,21 @@ public class OncallResource {
         } catch (Exception e) {
             log.error("Error while deleting watch email: {}", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Path("/sync-emails")
+    @UnitOfWork
+    public Response syncEmails() {
+        log.info("Initiating email synchronization");
+
+        try {
+            syncService.syncEmails();
+            return Response.ok("Email synchronization initiated.").build();
+        } catch (Exception e) {
+            log.error("Error during email synchronization: {}", e.getMessage());
+            return Response.serverError().entity("Error during email synchronization: " + e.getMessage()).build();
         }
     }
 

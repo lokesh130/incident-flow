@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -13,27 +15,37 @@ import lombok.NoArgsConstructor;
 public class RawEmailDTO {
     private Long id;
     private String subject;
-    private String fromList;
-    private String toList;
+    private String from;
+    private List<String> toList;
     private String body;
     private String messageId;
     private String threadId;
     private String messageOrder;
-    private String startDate;
-    private String endDate;
 
     public static RawEmailDTO map(RawEmail rawEmail) {
         return RawEmailDTO.builder()
                 .id(rawEmail.getId())
                 .subject(rawEmail.getSubject())
-                .fromList(rawEmail.getFromList())
+                .from(rawEmail.getFrom())
                 .toList(rawEmail.getToList())
                 .body(rawEmail.getBody())
                 .messageId(rawEmail.getMessageId())
                 .threadId(rawEmail.getThreadId())
                 .messageOrder(rawEmail.getMessageOrder())
-                .startDate(rawEmail.getStartDate().toString())
-                .endDate(rawEmail.getEndDate().toString())
                 .build();
+    }
+
+    public static RawEmail mapToEntity(RawEmailDTO rawEmailDTO) {
+        RawEmail rawEmail = RawEmail.builder()
+                .subject(rawEmailDTO.getSubject())
+                .from(rawEmailDTO.getFrom())
+                .body(rawEmailDTO.getBody())
+                .messageId(rawEmailDTO.getMessageId())
+                .threadId(rawEmailDTO.getThreadId())
+                .messageOrder(rawEmailDTO.getMessageOrder())
+                .build();
+
+        rawEmail.setToList(rawEmailDTO.getToList());
+        return rawEmail;
     }
 }

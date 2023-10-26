@@ -1,5 +1,6 @@
 package com.flipkart.fdsg.planning.ip.core.daos;
 
+import com.flipkart.fdsg.planning.ip.core.dtos.RawEmailDTO;
 import com.flipkart.fdsg.planning.ip.core.entities.RawEmail;
 import com.flipkart.persistence.dao.AbstractDAO;
 import org.hibernate.SessionFactory;
@@ -28,21 +29,6 @@ public class RawEmailDAO extends AbstractDAO<RawEmail> {
         return query.getResultList();
     }
 
-
-    public List<RawEmail> findByFromList(String fromList) {
-        String queryName = "Emails.findByFromList";
-        Query<RawEmail> query = currentSession().createNamedQuery(queryName, RawEmail.class);
-        query.setParameter("fromList", fromList);
-        return query.getResultList();
-    }
-
-    public List<RawEmail> findByToList(String toList) {
-        String queryName = "Emails.findByToList";
-        Query<RawEmail> query = currentSession().createNamedQuery(queryName, RawEmail.class);
-        query.setParameter("toList", toList);
-        return query.getResultList();
-    }
-
     public List<RawEmail> findByThreadId(String threadId) {
         String queryName = "Emails.findByThreadId";
         Query<RawEmail> query = currentSession().createNamedQuery(queryName, RawEmail.class);
@@ -55,5 +41,17 @@ public class RawEmailDAO extends AbstractDAO<RawEmail> {
         Query<RawEmail> query = currentSession().createNamedQuery(queryName, RawEmail.class);
         query.setParameter("messageId", messageId);
         return query.getResultList();
+    }
+
+    public List<RawEmail> findById(Long id) {
+        String queryName = "Emails.findById";
+        Query<RawEmail> query = currentSession().createNamedQuery(queryName, RawEmail.class);
+        query.setParameter("id", id);
+        return query.getResultList();
+    }
+
+    public void addRawEmail(RawEmailDTO rawEmailDTO) {
+        RawEmail rawEmail = RawEmailDTO.mapToEntity(rawEmailDTO);
+        persist(rawEmail);
     }
 }

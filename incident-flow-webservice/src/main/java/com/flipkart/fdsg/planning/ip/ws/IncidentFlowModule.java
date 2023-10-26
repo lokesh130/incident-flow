@@ -4,8 +4,8 @@ import com.codahale.metrics.health.HealthCheck;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import com.flipkart.fdsg.planning.ip.core.clients.IPConfigClient;
-import com.flipkart.fdsg.planning.ip.core.entities.WatchEmail;
+import com.flipkart.fdsg.planning.ip.core.clients.DefaultGmailClient;
+import com.flipkart.fdsg.planning.ip.core.clients.GmailClient;
 import com.flipkart.fdsg.planning.ip.core.services.*;
 import com.flipkart.fdsg.planning.ip.ws.config.IncidentFlowConfiguration;
 import com.google.inject.Binder;
@@ -59,6 +59,10 @@ public class IncidentFlowModule extends DropwizardAwareModule<IncidentFlowConfig
         binder.bind(FollowupService.class).to(DefaultFollowupService.class);
         binder.bind(WatchEmailService.class).to(DefaultWatchEmailService.class);
         binder.bind(MessageConfigurationService.class).to(DefaultMessageConfigurationService.class);
+        binder.bind(RawEmailService.class).to(DefaultRawEmailService.class);
+        binder.bind(RefreshTimestampLogService.class).to(DefaultRefreshTimestampLogService.class);
+        binder.bind(GmailClient.class).to(DefaultGmailClient.class);
+        binder.bind(SyncService.class).to(DefaultSyncService.class);
     }
 
     private void registerResources(Binder binder) {
