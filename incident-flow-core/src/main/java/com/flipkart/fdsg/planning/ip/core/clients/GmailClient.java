@@ -8,5 +8,5 @@ import java.util.Date;
 import java.util.List;
 
 public interface GmailClient {
-    List<MessageDTO> getMessages(String givenEmail, long timestamp);
+    List<MessageDTO> getMessages(List<String> givenEmail, long timestamp);
 }

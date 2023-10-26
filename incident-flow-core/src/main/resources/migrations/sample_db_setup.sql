@@ -135,6 +135,13 @@ CREATE TABLE message_configuration (
    frequency INT
 );
 
+CREATE TABLE refresh_timestamp_log (
+   id INT AUTO_INCREMENT PRIMARY KEY,
+   refresh_timestamp BIGINT,
+   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 ALTER TABLE followups
     ADD COLUMN priority ENUM('P0', 'P1', 'P2', 'P3');
 
@@ -242,6 +249,7 @@ INSERT INTO followups (oncall_tracker_id, message, is_acknowledged)
 VALUES
     (1, 'No Response since past 7 Days', 'NO', 'P1'),
     (2, 'No Response since past 15 Days', 'NO', 'P0');
+
 
 
 

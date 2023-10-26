@@ -6,10 +6,7 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.search.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static com.flipkart.fdsg.planning.ip.core.Constants.GmailConstants.GMAIL_INCIDENT_FLOW_APP_PASSWORD;
 import static com.flipkart.fdsg.planning.ip.core.Constants.GmailConstants.GMAIL_INCIDENT_FLOW_EMAIL_ID;
@@ -29,8 +26,16 @@ public class DefaultGmailClient implements GmailClient {
     }
 
 
-    public List<MessageDTO> getMessages(String givenEmail, long timestamp) {
-        return getMessagesWithCriteria(new EmailAddressTerm(givenEmail), timestamp);
+    public List<MessageDTO> getMessages(List<String> givenEmails, long timestamp) {
+        List<SearchTerm> searchTerms = new ArrayList<>();
+
+        for (String email : givenEmails) {
+            searchTerms.add(new EmailAddressTerm(email));
+        }
+
+        SearchTerm combinedSearchTerm = new AndTerm(searchTerms.toArray(new SearchTerm[0]));
+
+        return getMessagesWithCriteria(combinedSearchTerm, timestamp);
     }
 
     private List<MessageDTO> getMessagesWithCriteria(SearchTerm searchTerm, long timestamp) {
@@ -173,7 +178,7 @@ public class DefaultGmailClient implements GmailClient {
     public static void main(String[] args) {
         DefaultGmailClient defaultGmailClient = new DefaultGmailClient();
 
-        List<MessageDTO> messages = defaultGmailClient.getMessages("mlokesh.mamta@gmail.com", 0l);
+        List<MessageDTO> messages = defaultGmailClient.getMessages(Collections.singletonList("mlokesh.mamta@gmail.com"), 0l);
         for (MessageDTO message : messages) {
             System.out.println("From: " + message.getFrom());
             System.out.println("To: " + message.getToList());
