@@ -64,6 +64,7 @@ public class IncidentFlowModule extends DropwizardAwareModule<IncidentFlowConfig
         binder.bind(GmailClient.class).to(DefaultGmailClient.class);
         binder.bind(RefreshService.class).to(DefaultRefreshService.class);
         binder.bind(SyncService.class).to(DefaultSyncService.class);
+        binder.bind(ChatGptService.class).to(DefaultChatGptService.class);
     }
 
     private void registerResources(Binder binder) {
