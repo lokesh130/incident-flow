@@ -1,5 +1,6 @@
 package com.flipkart.fdsg.planning.ip.core.daos;
 
+import com.flipkart.fdsg.planning.ip.core.dtos.OncallTrackerDTO;
 import com.flipkart.fdsg.planning.ip.core.entities.OncallTracker;
 import com.flipkart.persistence.dao.AbstractDAO;
 import org.hibernate.SessionFactory;
@@ -48,5 +49,18 @@ public class OncallTrackerDAO extends AbstractDAO<OncallTracker> {
         Query<OncallTracker> query = currentSession().createNamedQuery(queryName, OncallTracker.class);
         query.setParameter("oncallGroupId", oncallGroupId);
         return query.getResultList();
+    }
+
+    public OncallTracker findByThreadId(String threadId) {
+        String queryName = "OncallTracker.findByThreadId";
+        Query<OncallTracker> query = currentSession().createNamedQuery(queryName, OncallTracker.class);
+        query.setParameter("threadId", threadId);
+        List<OncallTracker> result = query.getResultList();
+        return result.isEmpty() ? null : result.get(0);
+    }
+
+    public void add(OncallTrackerDTO dto) {
+        OncallTracker oncallTracker = OncallTrackerDTO.mapToEntity(dto);
+        persist(oncallTracker);
     }
 }

@@ -22,4 +22,12 @@ public class OncallUserDTO {
                 .name(oncallUser.getName())
                 .build();
     }
+
+    public static OncallUser mapToEntity(OncallUserDTO dto) {
+        OncallUser entity = new OncallUser();
+        entity.setId(dto.getId());
+        entity.setUserId(dto.getUserId());
+        entity.setName(dto.getName());
+        return entity;
+    }
 }

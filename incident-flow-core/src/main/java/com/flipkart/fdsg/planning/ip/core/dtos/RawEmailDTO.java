@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class RawEmailDTO {
     private Long id;
     private String subject;
@@ -20,7 +22,7 @@ public class RawEmailDTO {
     private String body;
     private String messageId;
     private String threadId;
-    private String messageOrder;
+    private Integer messageOrder;
 
     public static RawEmailDTO map(RawEmail rawEmail) {
         return RawEmailDTO.builder()

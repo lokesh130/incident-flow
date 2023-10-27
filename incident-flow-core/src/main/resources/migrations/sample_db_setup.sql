@@ -50,6 +50,17 @@ CREATE TABLE current_users (
    FOREIGN KEY (oncall_tracker_id) REFERENCES oncall_tracker(id)
 );
 
+CREATE TABLE raw_emails (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    subject VARCHAR(255),
+    to_list TEXT,
+    from_email VARCHAR(255),
+    body TEXT,
+    message_id VARCHAR(255),
+    thread_id VARCHAR(255),
+    message_order INT
+);
+
 ALTER TABLE oncall_user
     ADD COLUMN name VARCHAR(255);
 
@@ -104,6 +115,13 @@ ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIME
 ALTER TABLE current_users
     ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+ALTER TABLE oncall_tracker
+    ADD COLUMN thread_id VARCHAR(255);
+
+ALTER TABLE `oncall_tracker`
+    MODIFY COLUMN `description` VARCHAR(1500),
+    MODIFY COLUMN `oncall_status` VARCHAR(1500);
 
 CREATE TABLE alerts (
     id INT PRIMARY KEY AUTO_INCREMENT,

@@ -113,13 +113,12 @@ public class DefaultGmailClient implements GmailClient {
 
     private MessageDTO processMessageDTO(Message message) {
         try {
-            String from = InternetAddress.toString(message.getFrom());
-
+            String from = extractEmailAddress(message.getFrom());
             Address[] toAddresses = message.getRecipients(Message.RecipientType.TO);
             List<String> toList = new ArrayList<>();
             if (toAddresses != null) {
                 for (Address toAddress : toAddresses) {
-                    toList.add(toAddress.toString());
+                    toList.add(extractEmailAddress(toAddress));
                 }
             }
 
@@ -136,6 +135,20 @@ public class DefaultGmailClient implements GmailClient {
         return null;
     }
 
+    private String extractEmailAddress(Address[] addresses) {
+        if (addresses != null && addresses.length > 0) {
+            // Extract the first email address from the array
+            return extractEmailAddress(addresses[0]);
+        }
+        return "Unknown";
+    }
+
+    private String extractEmailAddress(Address address) {
+        if (address instanceof InternetAddress) {
+            return ((InternetAddress) address).getAddress();
+        }
+        return address.toString();
+    }
 
     private String getTextFromMessage(Message message) throws MessagingException, IOException {
         String result = "";
@@ -151,6 +164,10 @@ public class DefaultGmailClient implements GmailClient {
                 }
             }
         }
+
+        // Discard tab characters, newline characters, and escape sequences
+        result = result.replaceAll("[\\t\\n\\r]", "").replaceAll("\\p{C}", "");
+
         return result;
     }
 
@@ -163,7 +180,8 @@ public class DefaultGmailClient implements GmailClient {
         } else if (inReplyTo != null && inReplyTo.length > 0) {
             return extractThreadId(inReplyTo[0]);
         } else {
-            return Long.toString(message.getSentDate().getTime());
+            // Use the Message-ID as the thread ID
+            return extractThreadId(message.getHeader("Message-ID")[0]);
         }
     }
 

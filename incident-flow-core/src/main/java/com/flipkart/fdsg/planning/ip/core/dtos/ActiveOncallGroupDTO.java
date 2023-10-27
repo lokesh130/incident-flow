@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -25,5 +28,15 @@ public class ActiveOncallGroupDTO {
                 .startDate(activeOncallGroup.getStartDate().toString())
                 .endDate(activeOncallGroup.getEndDate().toString())
                 .build();
+    }
+
+    public static ActiveOncallGroup mapToEntity(ActiveOncallGroupDTO dto) {
+        ActiveOncallGroup entity = new ActiveOncallGroup();
+        entity.setId(dto.getId());
+        entity.setPrimaryUser(OncallUserDTO.mapToEntity(dto.getPrimaryUser()));
+        entity.setSecondaryUser(OncallUserDTO.mapToEntity(dto.getSecondaryUser()));
+        entity.setStartDate(LocalDateTime.parse(dto.getStartDate()));
+        entity.setEndDate(LocalDateTime.parse(dto.getEndDate()));
+        return entity;
     }
 }

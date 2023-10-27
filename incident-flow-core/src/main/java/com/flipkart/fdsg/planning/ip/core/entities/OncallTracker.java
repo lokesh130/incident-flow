@@ -21,10 +21,13 @@ import java.sql.Timestamp;
                 query = "SELECT ot FROM OncallTracker ot WHERE ot.activeOncallGroup.primaryUser.id = :primaryUserId " +
                         "AND ot.activeOncallGroup.secondaryUser.id = :secondaryUserId"),
         @NamedQuery(name = "OncallTracker.findByOncallGroupId",
-                query = "SELECT ot FROM OncallTracker ot WHERE ot.activeOncallGroup.id = :oncallGroupId")
+                query = "SELECT ot FROM OncallTracker ot WHERE ot.activeOncallGroup.id = :oncallGroupId"),
+        @NamedQuery(name = "OncallTracker.findByThreadId",
+                query = "SELECT ot FROM OncallTracker ot WHERE ot.threadId = :threadId")
 })
 public class OncallTracker extends BaseEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "title")
@@ -49,6 +52,9 @@ public class OncallTracker extends BaseEntity {
 
     @Column(name = "rca_doc")
     private String rcaDoc;
+
+    @Column(name = "thread_id")
+    private String threadId;
 
     public enum Priority {
         P0, P1, P2, P3;

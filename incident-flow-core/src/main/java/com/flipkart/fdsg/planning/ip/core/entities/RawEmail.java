@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 })
 public class RawEmail extends BaseEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
@@ -34,7 +35,7 @@ public class RawEmail extends BaseEntity {
     @Column(name="to_list")
     private String toList;
 
-    @Column(name = "from")
+    @Column(name = "from_email")
     private String from;
 
     @Column
@@ -47,7 +48,7 @@ public class RawEmail extends BaseEntity {
     private String threadId;
 
     @Column(name = "message_order")
-    private String messageOrder;
+    private Integer messageOrder;
 
     // Custom getter for toList
     public List<String> getToList() {

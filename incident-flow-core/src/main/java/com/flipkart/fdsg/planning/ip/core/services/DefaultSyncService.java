@@ -1,71 +1,66 @@
 package com.flipkart.fdsg.planning.ip.core.services;
 
-import com.flipkart.fdsg.planning.ip.core.clients.GmailClient;
-import com.flipkart.fdsg.planning.ip.core.dtos.MessageDTO;
+import com.flipkart.fdsg.planning.ip.core.dtos.OncallTrackerDTO;
 import com.flipkart.fdsg.planning.ip.core.dtos.RawEmailDTO;
-import com.flipkart.fdsg.planning.ip.core.entities.WatchEmail;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @Slf4j
+
 public class DefaultSyncService implements SyncService {
 
-    private final WatchEmailService watchEmailService;
-    private final RefreshTimestampLogService refreshTimestampLogService;
-    private final GmailClient gmailClient;
+    private final RefreshService refreshService;
+    private final OncallTrackerService oncallTrackerService;
     private final RawEmailService rawEmailService;
 
+    private final RefreshTimestampLogService refreshTimestampLogService;
+
     @Inject
-    public DefaultSyncService(WatchEmailService watchEmailService,
-                              RefreshTimestampLogService refreshTimestampLogService,
-                              GmailClient gmailClient,
-                              RawEmailService rawEmailService) {
-        this.watchEmailService = watchEmailService;
-        this.refreshTimestampLogService = refreshTimestampLogService;
-        this.gmailClient = gmailClient;
+    public DefaultSyncService(RefreshService refreshService, OncallTrackerService oncallTrackerService, RawEmailService rawEmailService, RefreshTimestampLogService refreshTimestampLogService) {
+        this.refreshService = refreshService;
+        this.oncallTrackerService = oncallTrackerService;
         this.rawEmailService = rawEmailService;
+        this.refreshTimestampLogService = refreshTimestampLogService;
     }
 
     @Override
-    @Transactional
-    public void syncEmails() {
-        log.info("Syncing emails...");
+    public void synchronizeEmails() {
+        log.info("Synchronizing emails...");
 
-        // Get watch emails
-        List<String> watchEmails = watchEmailService.getAllEmails().stream()
-                .map(WatchEmail::getEmail)
-                .collect(Collectors.toList());
-        log.info("Watch emails: {}", watchEmails);
+        List<RawEmailDTO> rawEmailDTOList = refreshService.refreshEmails();
+        log.info("Fetched RawEmailDTOs: {}", rawEmailDTOList);
 
-        // Get the latest refresh timestamp
-        Long latestRefreshTimestamp = refreshTimestampLogService.getLatestRefreshTimestamp();
-        log.info("Latest refresh timestamp: {}", latestRefreshTimestamp);
+        for (RawEmailDTO rawEmailDTO : rawEmailDTOList) {
+            synchronizeEmail(rawEmailDTO);
+        }
 
-        // Call GmailClient to get messages
-        List<MessageDTO> messages = gmailClient.getMessages(watchEmails, latestRefreshTimestamp);
-        log.info("Retrieved {} messages from Gmail.", messages.size());
+        String lastMessageId = rawEmailDTOList.isEmpty() ? null : rawEmailDTOList.get(rawEmailDTOList.size() - 1).getMessageId();
+        if(!Objects.isNull(lastMessageId)) {
+            refreshTimestampLogService.addRefreshTimestamp(Long.parseLong(lastMessageId));
+        }
+        log.info("Email synchronization complete.");
+    }
 
-        // Convert MessageDTO to RawEmailDTO
-        List<RawEmailDTO> rawEmailDTOs = messages.stream()
-                .map(messageDTO -> RawEmailDTO.builder()
-                        .subject(messageDTO.getSubject())
-                        .from(messageDTO.getFrom())
-                        .toList(messageDTO.getToList())
-                        .body(messageDTO.getContent())
-                        .messageId(messageDTO.getMessageId())
-                        .threadId(messageDTO.getThreadId())
-                        .build())
-                .collect(Collectors.toList());
-        log.info("Converted {} messages to RawEmailDTOs.", rawEmailDTOs.size());
+    private void synchronizeEmail(RawEmailDTO rawEmailDTO) {
+        String threadId = rawEmailDTO.getThreadId();
+        log.info("Processing email with threadId: {}", threadId);
 
-        // Add RawEmails
-        rawEmailService.addRawEmails(rawEmailDTOs);
-        log.info("Added {} RawEmails to the database.", rawEmailDTOs.size());
+        OncallTrackerDTO currentOncallTracker = OncallTrackerDTO.map(oncallTrackerService.findByThreadId(threadId));
+        OncallTrackerDTO updatedOncallTracker = rawEmailService.getUpdatedOncallTracker(currentOncallTracker, rawEmailDTO);
 
-        log.info("Email synchronization completed.");
+        if (updatedOncallTracker != null) {
+            if (currentOncallTracker == null) {
+                log.info("Adding OncallTracker for threadId: {}", threadId);
+                oncallTrackerService.addOncallTracker(updatedOncallTracker);
+            } else {
+                log.info("Updating OncallTracker for threadId: {}", threadId);
+                oncallTrackerService.updateOncallTracker(threadId, updatedOncallTracker);
+            }
+        } else {
+            log.info("No updated OncallTracker found for threadId: {}", threadId);
+        }
     }
 }

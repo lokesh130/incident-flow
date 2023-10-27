@@ -62,6 +62,7 @@ public class IncidentFlowModule extends DropwizardAwareModule<IncidentFlowConfig
         binder.bind(RawEmailService.class).to(DefaultRawEmailService.class);
         binder.bind(RefreshTimestampLogService.class).to(DefaultRefreshTimestampLogService.class);
         binder.bind(GmailClient.class).to(DefaultGmailClient.class);
+        binder.bind(RefreshService.class).to(DefaultRefreshService.class);
         binder.bind(SyncService.class).to(DefaultSyncService.class);
     }
 

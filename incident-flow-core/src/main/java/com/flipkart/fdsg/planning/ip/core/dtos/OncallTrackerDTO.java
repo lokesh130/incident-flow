@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -19,8 +21,13 @@ public class OncallTrackerDTO {
     private String status;
     private OncallTracker.Priority priority;
     private String rcaDoc;
+    private String threadId;
 
     public static OncallTrackerDTO map(OncallTracker oncallTracker) {
+        if(Objects.isNull(oncallTracker)) {
+            return null;
+        }
+
         return OncallTrackerDTO.builder()
                 .id(oncallTracker.getId())
                 .title(oncallTracker.getTitle())
@@ -30,6 +37,21 @@ public class OncallTrackerDTO {
                 .status(oncallTracker.getStatus())
                 .priority(oncallTracker.getPriority())
                 .rcaDoc(oncallTracker.getRcaDoc())
+                .threadId(oncallTracker.getThreadId())
+                .build();
+    }
+
+    public static OncallTracker mapToEntity(OncallTrackerDTO dto) {
+        return OncallTracker.builder()
+                .id(dto.getId())
+                .title(dto.getTitle())
+                .description(dto.getDescription())
+                .activeOncallGroup(ActiveOncallGroupDTO.mapToEntity(dto.getActiveOncallGroup()))
+                .oncallStatus(dto.getOncallStatus())
+                .status(dto.getStatus())
+                .priority(dto.getPriority())
+                .rcaDoc(dto.getRcaDoc())
+                .threadId(dto.getThreadId())
                 .build();
     }
 }

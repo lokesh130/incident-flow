@@ -31,6 +31,7 @@ public class OncallResource {
     private final FollowupService followupService;
     private final AlertService alertService;
     private final WatchEmailService watchEmailService;
+    private final RefreshService refreshService;
     private final SyncService syncService;
 
     @GET
@@ -234,7 +235,7 @@ public class OncallResource {
         log.info("Initiating email synchronization");
 
         try {
-            syncService.syncEmails();
+            syncService.synchronizeEmails();
             return Response.ok("Email synchronization initiated.").build();
         } catch (Exception e) {
             log.error("Error during email synchronization: {}", e.getMessage());
