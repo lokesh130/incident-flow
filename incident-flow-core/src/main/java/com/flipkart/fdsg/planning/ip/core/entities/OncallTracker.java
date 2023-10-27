@@ -56,6 +56,9 @@ public class OncallTracker extends BaseEntity {
     @Column(name = "thread_id")
     private String threadId;
 
+    @Column(name = "summary")
+    private String summary;
+
     public enum Priority {
         P0, P1, P2, P3;
     }

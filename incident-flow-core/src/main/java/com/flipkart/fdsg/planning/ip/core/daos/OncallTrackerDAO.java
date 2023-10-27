@@ -59,8 +59,9 @@ public class OncallTrackerDAO extends AbstractDAO<OncallTracker> {
         return result.isEmpty() ? null : result.get(0);
     }
 
-    public void add(OncallTrackerDTO dto) {
+    public OncallTracker add(OncallTrackerDTO dto) {
         OncallTracker oncallTracker = OncallTrackerDTO.mapToEntity(dto);
         persist(oncallTracker);
+        return oncallTracker;
     }
 }

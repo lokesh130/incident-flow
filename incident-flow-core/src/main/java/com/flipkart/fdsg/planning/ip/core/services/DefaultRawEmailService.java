@@ -75,18 +75,17 @@ public class DefaultRawEmailService implements RawEmailService {
                     .priority(OncallTracker.Priority.P1)
                     .rcaDoc(null)
                     .threadId(rawEmailDTO.getThreadId())
+                    .summary(rawEmailDTO.getBody())
                     .build();
         } else {
             log.info("Updating existing OncallTracker from RawEmailDTO...");
 
             oncallTrackerDTO.setOncallStatus(getSubstringBeforeFirstPeriod(rawEmailDTO.getBody()));
+            oncallTrackerDTO.setSummary(oncallTrackerDTO.getSummary() + " " + rawEmailDTO.getBody());
 
-            // If RawEmailDTO::body contains "resolved", set status to "resolved"
             if (rawEmailDTO.getBody().toLowerCase().contains("resolved")) {
                 oncallTrackerDTO.setStatus("CLOSED");
             }
-
-            // Rest of the fields are unaltered
         }
 
         return oncallTrackerDTO;

@@ -22,6 +22,7 @@ public class OncallTrackerDTO {
     private OncallTracker.Priority priority;
     private String rcaDoc;
     private String threadId;
+    private String summary;
 
     public static OncallTrackerDTO map(OncallTracker oncallTracker) {
         if(Objects.isNull(oncallTracker)) {
@@ -38,6 +39,7 @@ public class OncallTrackerDTO {
                 .priority(oncallTracker.getPriority())
                 .rcaDoc(oncallTracker.getRcaDoc())
                 .threadId(oncallTracker.getThreadId())
+                .summary(oncallTracker.getSummary())
                 .build();
     }
 
@@ -52,6 +54,7 @@ public class OncallTrackerDTO {
                 .priority(dto.getPriority())
                 .rcaDoc(dto.getRcaDoc())
                 .threadId(dto.getThreadId())
+                .summary(dto.getSummary())
                 .build();
     }
 }

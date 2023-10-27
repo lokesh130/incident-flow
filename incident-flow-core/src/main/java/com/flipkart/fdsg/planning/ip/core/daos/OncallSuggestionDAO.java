@@ -27,4 +27,7 @@ public class OncallSuggestionDAO extends AbstractDAO<OncallSuggestion> {
         query.setParameter("oncallTrackerId", oncallTrackerId);
         return query.getResultList();
     }
+    public void add(OncallSuggestion oncallSuggestion) {
+        currentSession().save(oncallSuggestion);
+    }
 }

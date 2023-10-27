@@ -20,5 +20,7 @@ public interface OncallTrackerService {
 
     void updateOncallTracker(String threadId, OncallTrackerDTO dto);
 
-    void addOncallTracker(OncallTrackerDTO dto);
+    OncallTracker addOncallTracker(OncallTrackerDTO dto);
+
+    List<OncallTracker> findAllByMatchingSubject(String subject);
 }
