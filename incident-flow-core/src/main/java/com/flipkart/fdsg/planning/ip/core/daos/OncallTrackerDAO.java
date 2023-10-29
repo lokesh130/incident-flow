@@ -7,6 +7,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
 import javax.inject.Inject;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class OncallTrackerDAO extends AbstractDAO<OncallTracker> {
@@ -63,5 +64,11 @@ public class OncallTrackerDAO extends AbstractDAO<OncallTracker> {
         OncallTracker oncallTracker = OncallTrackerDTO.mapToEntity(dto);
         persist(oncallTracker);
         return oncallTracker;
+    }
+
+    public List<OncallTracker> findActiveOncallTrackers() {
+        String queryName = "OncallTracker.find.active";
+        TypedQuery<OncallTracker> query = currentSession().createNamedQuery(queryName, OncallTracker.class);
+        return query.getResultList();
     }
 }

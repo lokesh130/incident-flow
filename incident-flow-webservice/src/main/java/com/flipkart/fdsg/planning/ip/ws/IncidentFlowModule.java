@@ -52,7 +52,7 @@ public class IncidentFlowModule extends DropwizardAwareModule<IncidentFlowConfig
         binder.bind(ActiveOncallGroupService.class).to(DefaultActiveOncallGroupService.class);
         binder.bind(CurrentUserService.class).to(DefaultCurrentUserService.class);
         binder.bind(HistoricalUserService.class).to(DefaultHistoricalUserService.class);
-        binder.bind(OncallSuggestionService.class).to(DefaultOncallSuggestionService.class);
+        binder.bind(OncallSummaryService.class).to(DefaultOncallSummaryService.class);
         binder.bind(OncallTrackerService.class).to(DefaultOncallTrackerService.class);
         binder.bind(OncallUserService.class).to(DefaultOncallUserService.class);
         binder.bind(AlertService.class).to(DefaultAlertService.class);
@@ -65,6 +65,7 @@ public class IncidentFlowModule extends DropwizardAwareModule<IncidentFlowConfig
         binder.bind(RefreshService.class).to(DefaultRefreshService.class);
         binder.bind(SyncService.class).to(DefaultSyncService.class);
         binder.bind(ChatGptService.class).to(DefaultChatGptService.class);
+        binder.bind(FollowupCriteriaService.class).to(DefaultFollowupCriteriaService.class);
     }
 
     private void registerResources(Binder binder) {

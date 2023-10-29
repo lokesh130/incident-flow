@@ -21,6 +21,7 @@ import javax.persistence.*;
 })
 public class HistoricalUser extends BaseEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne

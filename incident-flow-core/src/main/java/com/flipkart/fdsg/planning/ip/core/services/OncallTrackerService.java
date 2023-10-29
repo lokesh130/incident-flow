@@ -1,5 +1,6 @@
 package com.flipkart.fdsg.planning.ip.core.services;
 
+import com.flipkart.fdsg.planning.ip.core.dtos.FollowupDTO;
 import com.flipkart.fdsg.planning.ip.core.dtos.OncallTrackerDTO;
 import com.flipkart.fdsg.planning.ip.core.entities.OncallTracker;
 
@@ -23,4 +24,8 @@ public interface OncallTrackerService {
     OncallTracker addOncallTracker(OncallTrackerDTO dto);
 
     List<OncallTracker> findAllByMatchingSubject(String subject);
+
+    List<OncallTracker> findActiveOncallTrackersWithTimeDiff(Long timeDuration);
+
+    List<FollowupDTO> generateFollowups(Long timeDuration);
 }

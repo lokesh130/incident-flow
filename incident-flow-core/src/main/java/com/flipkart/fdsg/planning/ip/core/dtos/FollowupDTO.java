@@ -8,6 +8,7 @@ import lombok.Data;
 public class FollowupDTO {
     private int id;
     private String oncallTitle;
+    private OncallTrackerDTO oncallTrackerDTO;
     private String message;
     private Priority priority;
 
@@ -17,6 +18,7 @@ public class FollowupDTO {
         dto.setMessage(followup.getMessage());
         dto.setPriority(followup.getPriority());
         dto.setOncallTitle(followup.getOncallTracker().getTitle());
+        dto.setOncallTrackerDTO(OncallTrackerDTO.map(followup.getOncallTracker()));
         return dto;
     }
 }

@@ -27,4 +27,8 @@ public class CurrentUserDAO extends AbstractDAO<CurrentUser> {
         query.setParameter("oncallTrackerId", oncallTrackerId);
         return query.getResultList();
     }
+
+    public void add(CurrentUser currentUser) {
+        currentSession().save(currentUser);
+    }
 }

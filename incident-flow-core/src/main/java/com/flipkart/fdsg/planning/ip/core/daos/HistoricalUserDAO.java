@@ -27,4 +27,8 @@ public class HistoricalUserDAO extends AbstractDAO<HistoricalUser> {
         query.setParameter("oncallTrackerId", oncallTrackerId);
         return query.getResultList();
     }
+
+    public void add(HistoricalUser historicalUser) {
+        currentSession().save(historicalUser);
+    }
 }

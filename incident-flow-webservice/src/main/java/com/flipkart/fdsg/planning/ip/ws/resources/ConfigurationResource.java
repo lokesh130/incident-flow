@@ -1,8 +1,11 @@
 package com.flipkart.fdsg.planning.ip.ws.resources;
 
+import com.flipkart.fdsg.planning.ip.core.dtos.FollowupCriteriaDTO;
 import com.flipkart.fdsg.planning.ip.core.dtos.MessageConfigurationDTO;
+import com.flipkart.fdsg.planning.ip.core.entities.FollowupCriteria;
 import com.flipkart.fdsg.planning.ip.core.entities.MessageConfiguration;
 import com.flipkart.fdsg.planning.ip.core.exceptions.RecordNotFoundException;
+import com.flipkart.fdsg.planning.ip.core.services.FollowupCriteriaService;
 import com.flipkart.fdsg.planning.ip.core.services.MessageConfigurationService;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.swagger.annotations.Api;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
 public class ConfigurationResource {
 
     private final MessageConfigurationService messageConfigurationService;
+    private final FollowupCriteriaService followupCriteriaService;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -98,6 +102,60 @@ public class ConfigurationResource {
             return Response.ok(allConfigurations).build();
         } catch (RecordNotFoundException e) {
             log.error("Error while getting configurations: {}", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/followup")
+    @UnitOfWork
+    public Response addFollowupCriteria(FollowupCriteriaDTO followupCriteriaDTO) {
+        log.info("Adding FollowupCriteria");
+
+        try {
+            followupCriteriaService.addFollowupCriteria(followupCriteriaDTO.mapToEntity());
+            return Response.status(Response.Status.CREATED).build();
+        } catch (Exception e) {
+            log.error("Error while adding FollowupCriteria: {}", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+    @PUT
+    @Path("/followup/{expected_duration}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @UnitOfWork
+    public Response updateExpectedDuration(@PathParam("expected_duration") Long expectedDuration) {
+        log.info("Updating FollowupCriteria");
+
+        try {
+            followupCriteriaService.updateExpectedDurationOfLatestEntry(expectedDuration);
+            return Response.ok().build();
+        } catch (RecordNotFoundException e) {
+            log.error("Error while updating FollowupCriteria: {}", e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            log.error("Error while updating FollowupCriteria: {}", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @UnitOfWork
+    @Path("/followup")
+    public Response getLatestFollowupCriteria() {
+        log.info("Getting latest FollowupCriteria");
+
+        try {
+            FollowupCriteria latestFollowupCriteria = followupCriteriaService.findLatestFollowupCriteria()
+                    .orElseThrow(() -> new RecordNotFoundException(FollowupCriteria.class, "No FollowupCriteria found"));
+
+            FollowupCriteriaDTO followupCriteriaDTO = FollowupCriteriaDTO.map(latestFollowupCriteria);
+
+            return Response.ok(followupCriteriaDTO).build();
+        } catch (RecordNotFoundException e) {
+            log.error("Error while getting latest FollowupCriteria: {}", e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
     }

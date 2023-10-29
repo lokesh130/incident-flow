@@ -21,6 +21,10 @@ import javax.persistence.*;
         @NamedQuery(
                 name = "Followup.find.by.id",
                 query = "SELECT f FROM Followup f WHERE f.id = :followupId"
+        ),
+        @NamedQuery(
+                name = "Followup.find.by.oncallTrackerId",
+                query = "SELECT f FROM Followup f WHERE f.oncallTracker.id = :oncallTrackerId"
         )
 })
 public class Followup {

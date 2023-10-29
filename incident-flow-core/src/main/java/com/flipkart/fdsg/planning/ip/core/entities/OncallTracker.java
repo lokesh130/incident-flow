@@ -23,7 +23,11 @@ import java.sql.Timestamp;
         @NamedQuery(name = "OncallTracker.findByOncallGroupId",
                 query = "SELECT ot FROM OncallTracker ot WHERE ot.activeOncallGroup.id = :oncallGroupId"),
         @NamedQuery(name = "OncallTracker.findByThreadId",
-                query = "SELECT ot FROM OncallTracker ot WHERE ot.threadId = :threadId")
+                query = "SELECT ot FROM OncallTracker ot WHERE ot.threadId = :threadId"),
+        @NamedQuery(
+                name = "OncallTracker.find.active",
+                query = "SELECT ot FROM OncallTracker ot WHERE ot.status = 'ACTIVE'"
+        )
 })
 public class OncallTracker extends BaseEntity {
     @Id

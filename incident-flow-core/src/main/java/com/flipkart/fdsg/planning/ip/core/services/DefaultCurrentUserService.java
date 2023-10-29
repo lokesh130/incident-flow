@@ -1,6 +1,8 @@
 package com.flipkart.fdsg.planning.ip.core.services;
 
 import com.flipkart.fdsg.planning.ip.core.daos.CurrentUserDAO;
+import com.flipkart.fdsg.planning.ip.core.dtos.CurrentUserDTO;
+import com.flipkart.fdsg.planning.ip.core.dtos.OncallTrackerDTO;
 import com.flipkart.fdsg.planning.ip.core.entities.CurrentUser;
 
 import javax.inject.Inject;
@@ -26,5 +28,17 @@ public class DefaultCurrentUserService implements CurrentUserService {
     @Transactional
     public List<CurrentUser> findByOncallTrackerId(Long oncallTrackerId) {
         return currentUserDAO.findByOncallTrackerId(oncallTrackerId);
+    }
+
+    @Override
+    @Transactional
+    public void add(List<CurrentUserDTO> currentUserDTOs) {
+        currentUserDTOs.stream().forEach(currentUserDTO -> {
+            CurrentUser currentUser = CurrentUser.builder()
+                    .userId(currentUserDTO.getUserId())
+                    .oncallTracker(OncallTrackerDTO.mapToEntity(currentUserDTO.getOncallTracker()))
+                    .build();
+            currentUserDAO.add(currentUser);
+        });
     }
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Builder
 @Data
@@ -14,13 +15,14 @@ import javax.persistence.*;
 @Entity
 @Table(name = "oncall_suggestions")
 @NamedQueries({
-        @NamedQuery(name = "OncallSuggestions.findAll", query = "SELECT os FROM OncallSuggestion os"),
+        @NamedQuery(name = "OncallSuggestions.findAll", query = "SELECT os FROM OncallSummary os"),
         @NamedQuery(name = "OncallSuggestions.findByOncallTrackerId",
-                query = "SELECT os FROM OncallSuggestion os WHERE os.oncallTracker.id = :oncallTrackerId")
+                query = "SELECT os FROM OncallSummary os WHERE os.oncallTracker.id = :oncallTrackerId")
 
 })
-public class OncallSuggestion extends BaseEntity {
+public class OncallSummary extends BaseEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -29,4 +31,7 @@ public class OncallSuggestion extends BaseEntity {
 
     @Column(name = "suggestion")
     private String suggestion;
+
+    @Column(name = "thread_date")
+    private LocalDateTime threadDate;
 }

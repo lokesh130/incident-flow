@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
 import javax.inject.Inject;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class FollowupDAO extends AbstractDAO<Followup> {
@@ -26,5 +27,17 @@ public class FollowupDAO extends AbstractDAO<Followup> {
         Query<Followup> query = currentSession().createNamedQuery(queryName, Followup.class);
         query.setParameter("followupId", followupId);
         return query.uniqueResult();
+    }
+
+    public void save(Followup followup) {
+        currentSession().save(followup);
+    }
+
+
+    public List<Followup> findByOncallTrackerId(Long oncallTrackerId) {
+        String queryName = "Followup.find.by.oncallTrackerId";
+        Query<Followup> query = currentSession().createNamedQuery(queryName, Followup.class);
+        query.setParameter("oncallTrackerId", oncallTrackerId);
+        return query.getResultList();
     }
 }

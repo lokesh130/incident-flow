@@ -25,7 +25,7 @@ public class OncallResource {
 
     private final ActiveOncallGroupService activeOncallGroupService;
     private final OncallTrackerService oncallTrackerService;
-    private final OncallSuggestionService oncallSuggestionService;
+    private final OncallSummaryService oncallSummaryService;
     private final CurrentUserService currentUserService;
     private final HistoricalUserService historicalUserService;
     private final FollowupService followupService;
@@ -97,8 +97,8 @@ public class OncallResource {
         log.info("Getting all on-call suggestions");
 
         try {
-            List<OncallSuggestionDTO> oncallSuggestions = oncallSuggestionService.findByOncallTrackerId(oncallTrackerId)
-                    .stream().map(OncallSuggestionDTO::map).collect(Collectors.toList());
+            List<OncallSummaryDTO> oncallSuggestions = oncallSummaryService.findByOncallTrackerId(oncallTrackerId)
+                    .stream().map(OncallSummaryDTO::map).collect(Collectors.toList());
 
             return Response.ok(oncallSuggestions).build();
         } catch (RecordNotFoundException e) {
@@ -239,7 +239,23 @@ public class OncallResource {
             return Response.ok("Email synchronization initiated.").build();
         } catch (Exception e) {
             log.error("Error during email synchronization: {}", e.getMessage());
+            e.printStackTrace();
             return Response.serverError().entity("Error during email synchronization: " + e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Path("/sync-followups")
+    @UnitOfWork
+    public Response syncFollowups() {
+        log.info("Initiating followups synchronization");
+
+        try {
+            syncService.synchronizeFollowups();
+            return Response.ok("Followups synchronization initiated.").build();
+        } catch (Exception e) {
+            log.error("Error during followups synchronization: {}", e.getMessage());
+            return Response.serverError().entity("Error during followups synchronization: " + e.getMessage()).build();
         }
     }
 

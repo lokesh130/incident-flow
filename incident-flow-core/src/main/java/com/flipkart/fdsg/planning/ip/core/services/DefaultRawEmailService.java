@@ -18,10 +18,13 @@ public class DefaultRawEmailService implements RawEmailService {
     private final RawEmailDAO rawEmailDAO;
     private final ActiveOncallGroupService activeOncallGroupService;
 
+    private final ChatGptService chatGptService;
+
     @Inject
-    public DefaultRawEmailService(RawEmailDAO rawEmailDAO, ActiveOncallGroupService activeOncallGroupService) {
+    public DefaultRawEmailService(RawEmailDAO rawEmailDAO, ActiveOncallGroupService activeOncallGroupService, ChatGptService chatGptService) {
         this.rawEmailDAO = rawEmailDAO;
         this.activeOncallGroupService = activeOncallGroupService;
+        this.chatGptService = chatGptService;
     }
 
     @Override
@@ -68,24 +71,21 @@ public class DefaultRawEmailService implements RawEmailService {
 
             oncallTrackerDTO = OncallTrackerDTO.builder()
                     .title(rawEmailDTO.getSubject())
-                    .description(getSubstringBeforeFirstPeriod(rawEmailDTO.getBody()))
+                    .description(chatGptService.getDescription(rawEmailDTO.getBody()))
                     .activeOncallGroup(fetchLatestActiveOncallGroup())
-                    .oncallStatus("Initiated")
-                    .status("ACTIVE")
-                    .priority(OncallTracker.Priority.P1)
+                    .oncallStatus(chatGptService.getOncallStatus(true, rawEmailDTO.getBody()))
+                    .status(chatGptService.getStatus(rawEmailDTO.getBody()))
+                    .priority(OncallTracker.Priority.valueOf(chatGptService.getPriority(rawEmailDTO.getBody())))
                     .rcaDoc(null)
                     .threadId(rawEmailDTO.getThreadId())
-                    .summary(rawEmailDTO.getBody())
+                    .summary(chatGptService.getSummary(rawEmailDTO.getBody()))
                     .build();
         } else {
             log.info("Updating existing OncallTracker from RawEmailDTO...");
 
-            oncallTrackerDTO.setOncallStatus(getSubstringBeforeFirstPeriod(rawEmailDTO.getBody()));
-            oncallTrackerDTO.setSummary(oncallTrackerDTO.getSummary() + " " + rawEmailDTO.getBody());
-
-            if (rawEmailDTO.getBody().toLowerCase().contains("resolved")) {
-                oncallTrackerDTO.setStatus("CLOSED");
-            }
+            oncallTrackerDTO.setOncallStatus(chatGptService.getOncallStatus(false, rawEmailDTO.getBody()));
+            oncallTrackerDTO.setSummary(chatGptService.getSummary(rawEmailDTO.getBody()));
+            oncallTrackerDTO.setStatus(chatGptService.getStatus(rawEmailDTO.getBody()));
         }
 
         return oncallTrackerDTO;
